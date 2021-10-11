@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase IMG-CDN</title>
+</head>
+
+<body>
+  <h1>Welcome Bruh</h1>
+  <hr>
+  <progress value="0" max="100" id="uploadProgress">0%</progress>
+  <input type="file" value="upload" id="uploadButton">
+
+  <button type="submit" id="downloadPath">Download</button>
+
+  <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQEpqvm9qrZ2yyGfdwF5TySJw_sF2um0M",
+      authDomain: "mkp-simulation.firebaseapp.com",
+      projectId: "mkp-simulation",
+      storageBucket: "mkp-simulation.appspot.com",
+      messagingSenderId: "387303843730",
+      appId: "1:387303843730:web:19217e941678f72156434b",
+      measurementId: "G-4MCGXXED41"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    let storage = firebase.storage();
+
+    let progress = document.getElementById('uploadProgress');
+    let button = document.getElementById('uploadButton');
+    let downloadPath = document.getElementById('downloadPath');
+
+    const imgRef = storage.ref('imguploadmkp/girl_and_cat_illustration-wallpaper-3840x2400.jpg')
+
+    downloadPath.addEventListener('click', function(){
+      imgRef.getDownloadURL().then(function(url){
+        console.log('download successfully!')
+        console.log(url)
+      });
+    });
+
+    button.addEventListener('change', function (e) {
+      let file = e.target.files[0];
+      let storageRef = storage.ref('imguploadmkp/' + file.name)
+      let uploadTask = storageRef.put(file)
+
+      uploadTask.on('state_changed', loadUpload, errUpload, completeUpload)
+
+      function loadUpload(data) {
+        let percent = (data.bytesTransferred / data.totalBytes) * 100
+        progress.value = percent
+      }
+
+      function errUpload(err) {
+        console.log('error')
+        console.log(err)
+      }
+
+      function completeUpload(data) {
+        console.log('success')
+        console.log(data)
+      }
+    });
+  </script>
+</body>
+
+</html>
